@@ -37,8 +37,6 @@ namespace Sylver.AutomatronExtention
         public override void OnLoad()
         {
             spaar.Mods.Automatron.Action.ActionTypes.Add("Spawn Block", typeof(ActionBlockSpawner));
-            AutomatronBlockMod auto = new AutomatronBlockMod();
-            auto.GuiCall();
         }
 
         public override void OnUnload()

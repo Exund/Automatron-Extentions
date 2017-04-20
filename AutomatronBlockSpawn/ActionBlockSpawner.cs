@@ -9,7 +9,7 @@ using spaar.Mods.Automatron.Actions;
 
 namespace Sylver.AutomatronExtention
 {
-    public class ActionBlockSpawner : BlockSpecificAction
+    public class ActionBlockSpawner : spaar.Mods.Automatron.Action
     {
         public override string Title { get; set; } = "Spawn Block";
 
@@ -146,7 +146,7 @@ namespace Sylver.AutomatronExtention
 
         public override string Serialize()
         {
-            var data = "Change Spawned Block ID and position?" +
+            var data = "Spawn Block?" +
                        "{blockID:"+blockID +
                        ",posX:"+posX+
                        ",posY:"+posY+
