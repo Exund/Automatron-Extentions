@@ -76,7 +76,7 @@ namespace Sylver.AutomatronExtention
             }
             
             Vector3 relativePosition = new Vector3(Machine.Active().GetBlock(410).transform.position.x + valuePosX, Machine.Active().GetBlock(410).transform.position.y + valuePosY, Machine.Active().GetBlock(410).transform.position.z + valuePosZ);
-            Quaternion relativeRotation = new Quaternion(valueRotX,valueRotY,valueRotZ,1f);
+            Quaternion relativeRotation = new Quaternion(valueRotX * 1f, valueRotY * 1f, valueRotZ * 1f,1f);
             Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject,relativePosition, Machine.Active().GetBlock(410).transform.rotation);
             Nlock.SetActive(true);
             XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
@@ -84,9 +84,7 @@ namespace Sylver.AutomatronExtention
             Nlock.GetComponent<BlockBehaviour>().OnLoad(xDataHolder);
             Nlock.GetComponent<Rigidbody>().isKinematic = false;
             Nlock.transform.localScale *= 1;
-            Nlock.transform.SetParent(Machine.Active().SimulationMachine);
-
-            
+            Nlock.transform.SetParent(Machine.Active().SimulationMachine);       
         }
 
         public void IDChanged(int ID)
@@ -97,22 +95,6 @@ namespace Sylver.AutomatronExtention
             }
         }
 
-        protected virtual IEnumerator UpdateMapper()
-        {
-            if (BlockMapper.CurrentInstance == null)
-            {
-                yield break;
-            }
-            while (Input.GetMouseButton(0))
-            {
-                yield return null;
-            }
-
-            BlockMapper.CurrentInstance.Copy();
-            BlockMapper.CurrentInstance.Paste();
-            yield break;
-        }
-
         private void SpawnChild()
         {
             if (blockToSpawn != null)
@@ -120,8 +102,7 @@ namespace Sylver.AutomatronExtention
                 GameObject.Destroy(blockToSpawn.gameObject);
             }
                 blockToSpawn = GameObject.Instantiate(PrefabMaster.BlockPrefabs[valueID].blockBehaviour);
-                blockToSpawn.gameObject.SetActive(false);
-                //blockToSpawn.transform.SetParent(this.transform);  
+                blockToSpawn.gameObject.SetActive(false); 
         }
 
 
@@ -145,7 +126,7 @@ namespace Sylver.AutomatronExtention
             posZ = GUILayout.TextField(posZ);
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Block Rotaion (relative to the Automatron)");
+            /*GUILayout.Label("Block Rotation (relative to the Automatron)");
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("   X");
@@ -157,7 +138,7 @@ namespace Sylver.AutomatronExtention
             rotX = GUILayout.TextField(rotX);
             rotY = GUILayout.TextField(rotY);
             rotZ = GUILayout.TextField(rotZ);
-            GUILayout.EndHorizontal();
+            GUILayout.EndHorizontal();*/
 
             GUILayout.FlexibleSpace();     
 
