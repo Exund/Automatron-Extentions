@@ -17,55 +17,67 @@ namespace Sylver.AutomatronExtention
         private int valueID = 0;
 
         private string posX;
-        private int valueX = 0;
+        private float valuePosX = 0;
 
         private string posY;
-        private int valueY = 0;
+        private float valuePosY = 0;
 
         private string posZ;
-        private int valueZ = 0;
+        private float valuePosZ = 0;
 
-        private List<int> MatchingIDs = new List<int>();
+        private string rotX;
+        private float valueRotX = 0;
+
+        private string rotY;
+        private float valueRotY = 0;
+
+        private string rotZ;
+        private float valueRotZ = 0;
 
         public BlockBehaviour blockToSpawn;
 
         public override void Create(ConfigureDoneCallback cb, HideGUICallback hideCb)
         {
             base.Create(cb, hideCb);
-
+            UpdateTitle();
             blockID = valueID.ToString();
-            posX = valueX.ToString();
-            posY = valueY.ToString();
-            posZ = valueZ.ToString();
-
-
-            List<string> list = new List<string>();
-
-            foreach (BlockPrefab pair in PrefabMaster.BlockPrefabs.Values)
-            {
-                list.Add(pair.gameObject.GetComponent<MyBlockInfo>().blockName);
-                MatchingIDs.Add(pair.ID);
-            }
+            posX = valuePosX.ToString();
+            posY = valuePosY.ToString();
+            posZ = valuePosZ.ToString();
+            rotX = valueRotX.ToString();
+            rotY = valueRotY.ToString();
+            rotZ = valueRotZ.ToString();
         }
 
         private void UpdateTitle()
         {
             if (Game.IsSimulating) return;
+
+            if (blockID != "")
+            {
+                Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName + "\nat " +posX+" "+posY+" "+posZ;
+            }
         }
 
         public override void Trigger()
         {
             valueID = int.Parse(blockID);
-            valueX = int.Parse(posX);
-            valueY = int.Parse(posY);
-            valueZ = int.Parse(posZ);
+            valuePosX = float.Parse(posX);
+            valuePosY = float.Parse(posY);
+            valuePosZ = float.Parse(posZ);
+            valueRotX = float.Parse(rotX);
+            valueRotY = float.Parse(rotY);
+            valueRotZ = float.Parse(rotZ);
+
             GameObject Nlock;
             if (blockToSpawn == null)
             {
                 SpawnChild();
             }
-            Vector3 relativePosition = new Vector3(Machine.Active().GetBlock(410).transform.position.x + valueX, Machine.Active().GetBlock(410).transform.position.y + valueY, Machine.Active().GetBlock(410).transform.position.z + valueZ);
-            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject,relativePosition, Machine.Active().GetBlock(0).transform.rotation);
+            
+            Vector3 relativePosition = new Vector3(Machine.Active().GetBlock(410).transform.position.x + valuePosX, Machine.Active().GetBlock(410).transform.position.y + valuePosY, Machine.Active().GetBlock(410).transform.position.z + valuePosZ);
+            Quaternion relativeRotation = new Quaternion(valueRotX,valueRotY,valueRotZ,1f);
+            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject,relativePosition, Machine.Active().GetBlock(410).transform.rotation);
             Nlock.SetActive(true);
             XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
             blockToSpawn.OnSave(xDataHolder);
@@ -73,6 +85,8 @@ namespace Sylver.AutomatronExtention
             Nlock.GetComponent<Rigidbody>().isKinematic = false;
             Nlock.transform.localScale *= 1;
             Nlock.transform.SetParent(Machine.Active().SimulationMachine);
+
+            
         }
 
         public void IDChanged(int ID)
@@ -131,6 +145,20 @@ namespace Sylver.AutomatronExtention
             posZ = GUILayout.TextField(posZ);
             GUILayout.EndHorizontal();
 
+            GUILayout.Label("Block Rotaion (relative to the Automatron)");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("   X");
+            GUILayout.Label("   Y");
+            GUILayout.Label("   Z");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            rotX = GUILayout.TextField(rotX);
+            rotY = GUILayout.TextField(rotY);
+            rotZ = GUILayout.TextField(rotZ);
+            GUILayout.EndHorizontal();
+
             GUILayout.FlexibleSpace();     
 
             if (GUILayout.Button("Save"))
@@ -139,6 +167,7 @@ namespace Sylver.AutomatronExtention
             }
 
             GUI.DragWindow();
+            UpdateTitle();
         }
 
         protected override void Close()
