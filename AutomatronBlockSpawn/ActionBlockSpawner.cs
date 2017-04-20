@@ -55,18 +55,23 @@ namespace Sylver.AutomatronExtention
 
         public override void Trigger()
         {
+            valueID = int.Parse(blockID);
+            valueX = int.Parse(posX);
+            valueY = int.Parse(posY);
+            valueZ = int.Parse(posZ);
             GameObject Nlock;
             if (blockToSpawn == null)
             {
                 SpawnChild();
             }
-
-            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject,Machine.Active().transform.position, Machine.Active().transform.rotation);
+            Vector3 relativePosition = new Vector3(Machine.Active().GetBlock(410).transform.position.x + valueX, Machine.Active().GetBlock(410).transform.position.y + valueY, Machine.Active().GetBlock(410).transform.position.z + valueZ);
+            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject,relativePosition, Machine.Active().GetBlock(0).transform.rotation);
             Nlock.SetActive(true);
             XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
             blockToSpawn.OnSave(xDataHolder);
             Nlock.GetComponent<BlockBehaviour>().OnLoad(xDataHolder);
             Nlock.GetComponent<Rigidbody>().isKinematic = false;
+            Nlock.transform.localScale *= 1;
             Nlock.transform.SetParent(Machine.Active().SimulationMachine);
         }
 
@@ -100,7 +105,7 @@ namespace Sylver.AutomatronExtention
             {
                 GameObject.Destroy(blockToSpawn.gameObject);
             }
-                blockToSpawn = GameObject.Instantiate(PrefabMaster.BlockPrefabs[MatchingIDs[valueID]].blockBehaviour);
+                blockToSpawn = GameObject.Instantiate(PrefabMaster.BlockPrefabs[valueID].blockBehaviour);
                 blockToSpawn.gameObject.SetActive(false);
                 //blockToSpawn.transform.SetParent(this.transform);  
         }
@@ -115,9 +120,9 @@ namespace Sylver.AutomatronExtention
             GUILayout.Label("Block Position (relative to the Automatron)");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("X");
-            GUILayout.Label("Y");
-            GUILayout.Label("Z");
+            GUILayout.Label("   X");
+            GUILayout.Label("   Y");
+            GUILayout.Label("   Z");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -125,8 +130,6 @@ namespace Sylver.AutomatronExtention
             posY = GUILayout.TextField(posY);
             posZ = GUILayout.TextField(posZ);
             GUILayout.EndHorizontal();
-
-
 
             GUILayout.FlexibleSpace();     
 
