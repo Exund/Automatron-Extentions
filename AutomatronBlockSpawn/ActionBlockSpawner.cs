@@ -116,8 +116,11 @@ namespace Sylver.AutomatronExtention
 
             var st = Nlock.transform;
             var at = automatron.transform;
-            st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ)) + at.position;
-            st.rotation = at.rotation * Quaternion.Euler(valueScaleX, valueScaleY, valueScaleZ);
+            st.parent = at;
+            /*st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ)) + at.position;
+            st.rotation = at.rotation * Quaternion.Euler(valueRotX, valueRotY, valueRotZ);*/
+            st.localPosition = new Vector3(valuePosX, valuePosY, valuePosZ);
+            st.localRotation = Quaternion.Euler(valueRotX, valueRotY, valueRotZ);
             st.localScale = new Vector3(valueScaleX, valueScaleY, valueScaleZ);
               
             Nlock.SetActive(true);
