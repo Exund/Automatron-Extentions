@@ -44,7 +44,8 @@ namespace Sylver.AutomatronExtention
 			try
 			{
 				valueID = int.Parse(blockID);
-				Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName;
+				Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.
+					GetComponent<MyBlockInfo>().blockName;
 			} catch
 			{
 				Title = "Invalid ID";
@@ -82,8 +83,6 @@ namespace Sylver.AutomatronExtention
 			var st = Nlock.transform;
 			var at = automatron.transform;
 			st.parent = at;
-			/*st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ)) + at.position;
-            st.rotation = at.rotation * Quaternion.Euler(valueRotX, valueRotY, valueRotZ);*/
 			st.localPosition = fValues[(int)value.pos];
 			st.localRotation = Quaternion.Euler(fValues[(int)value.rot]);
 
