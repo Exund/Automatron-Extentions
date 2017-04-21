@@ -16,33 +16,13 @@ namespace Sylver.AutomatronExtention
         private string blockID;
         private int valueID = 0;
 
-        private string posX;
-        private float valuePosX = 0;
-
-        private string posY;
-        private float valuePosY = 0;
-
-        private string posZ;
-        private float valuePosZ = 0;
-
-        private string rotX;
-        private float valueRotX = 0;
-
-        private string rotY;
-        private float valueRotY = 0;
-
-        private string rotZ;
-        private float valueRotZ = 0;
-
-        private string scaleX;
-        private float valueScaleX = 1;
-
-        private string scaleY;
-        private float valueScaleY = 1;
-
-        private string scaleZ;
-        private float valueScaleZ = 1;
-
+		private string[] sValues = new String[9];
+		private Vector3[] fValues = new Vector3[] { Vector3.zero,Vector3.zero,Vector3.one };
+		private string[] names = new string[]{"posX","posY","posZ",
+			"rotX","rotY","rotZ","scaleX","scaleX","scaleY","scaleZ"};
+		private enum value { pos=0, rot=1, scale=2 };
+		private enum dim { x=0, y=1, z=2};
+		
         public BlockBehaviour blockToSpawn;
 
         public override void Create(ConfigureDoneCallback cb, HideGUICallback hideCb)
@@ -50,15 +30,9 @@ namespace Sylver.AutomatronExtention
             base.Create(cb, hideCb);
             UpdateTitle();
             blockID = valueID.ToString();
-            posX = valuePosX.ToString();
-            posY = valuePosY.ToString();
-            posZ = valuePosZ.ToString();
-            rotX = valueRotX.ToString();
-            rotY = valueRotY.ToString();
-            rotZ = valueRotZ.ToString();
-            scaleX = valueScaleX.ToString();
-            scaleY = valueScaleY.ToString();
-            scaleZ = valueScaleZ.ToString();
+			for(int i = 0; i<9; i++) {
+				sValues[i] = fValues[i/3][i%3].ToString();
+			}
         }
 
         private void UpdateTitle()
@@ -73,38 +47,25 @@ namespace Sylver.AutomatronExtention
 
         public override void Trigger(AutomatronBlock automatron)
         {
-            if (blockID == "") valueID = 0; 
-            else valueID = int.Parse(blockID);
-
-            if (posX == "") valuePosX = 0;
-            else valuePosX = float.Parse(posX);
-
-            if (posY == "") valuePosY = 0;
-            else valuePosY = float.Parse(posY);
-
-            if (posZ == "") valuePosZ = 0;
-            else valuePosZ = float.Parse(posZ);
-
-            if (rotX == "") valueRotX = 0;
-            else valueRotX = float.Parse(rotX);
-
-            if (rotX == "") valueRotY = 0;
-            else valueRotY = float.Parse(rotY);
-
-            if (rotX == "") valueRotZ = 0;
-            else valueRotZ = float.Parse(rotZ);
-
-            if (scaleX == "") valueScaleX = 1;
-            else valueScaleX = float.Parse(scaleX);
-
-            if (scaleY == "") valueScaleY = 1;
-            else valueScaleY = float.Parse(scaleY);
-
-            if (scaleZ == "") valueScaleZ = 1;
-            else valueScaleZ = float.Parse(scaleZ);
-
-            if (valueID == 0) posZ += 0.5f;
-
+			try
+			{
+				valueID = int.Parse(blockID);
+			} catch
+			{
+				valueID = 0;
+			}
+			for(int i = 0;i<9;i++)
+			{
+				try
+				{
+					fValues[i/3][i%3] = float.Parse(sValues[i]);
+				}catch
+				{
+					fValues[i/3][i%3] = 0;
+				}
+			}
+			
+            if (valueID == 0) fValues[(int)value.pos][(int)dim.z] += 0.5f;
 
             GameObject Nlock;
             if (blockToSpawn == null)
@@ -119,9 +80,9 @@ namespace Sylver.AutomatronExtention
             st.parent = at;
             /*st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ)) + at.position;
             st.rotation = at.rotation * Quaternion.Euler(valueRotX, valueRotY, valueRotZ);*/
-            st.localPosition = new Vector3(valuePosX, valuePosY, valuePosZ);
-            st.localRotation = Quaternion.Euler(valueRotX, valueRotY, valueRotZ);
-            st.localScale = new Vector3(valueScaleX, valueScaleY, valueScaleZ);
+            st.localPosition = fValues[(int)value.pos];
+            st.localRotation = Quaternion.Euler(fValues[(int)value.rot]);
+            st.localScale = fValues[(int)value.scale];
               
             Nlock.SetActive(true);
             XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
@@ -146,53 +107,38 @@ namespace Sylver.AutomatronExtention
 
         protected override void DoWindow(int id)
         {
-
             GUILayout.Label("Block ID");
             blockID = GUILayout.TextField(blockID);
-
-            GUILayout.Label("Block Position (relative to the Automatron)");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("   X");
-            GUILayout.Label("   Y");
-            GUILayout.Label("   Z");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            posX = GUILayout.TextField(posX);
-            posY = GUILayout.TextField(posY);
-            posZ = GUILayout.TextField(posZ);
-            GUILayout.EndHorizontal();
-
-            GUILayout.Label("Block Rotation (relative to the Automatron)");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("   X");
-            GUILayout.Label("   Y");
-            GUILayout.Label("   Z");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            rotX = GUILayout.TextField(rotX);
-            rotY = GUILayout.TextField(rotY);
-            rotZ = GUILayout.TextField(rotZ);
-            GUILayout.EndHorizontal();
-
-            GUILayout.Label("Block Scale");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("   X");
-            GUILayout.Label("   Y");
-            GUILayout.Label("   Z");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            scaleX = GUILayout.TextField(scaleX);
-            scaleY = GUILayout.TextField(scaleY);
-            scaleZ = GUILayout.TextField(scaleZ);
-            GUILayout.EndHorizontal();
-
-            GUILayout.FlexibleSpace();     
+		
+			for(int i = 0; i<9; i++)
+			{
+				if(i%3==0)
+				{
+					switch(i)
+					{
+						case 0:
+							GUILayout.Label("Block Position (relative to the Automatron)");
+							break;
+						case 3:
+							GUILayout.EndHorizontal();
+							GUILayout.Label("Block Rotation (relative to the Automatron)");
+							break;
+						case 6:
+							GUILayout.EndHorizontal();
+							GUILayout.Label("Block Scale");
+							break;
+					}
+					GUILayout.BeginHorizontal();
+					GUILayout.Label("   X");
+					GUILayout.Label("   Y");
+					GUILayout.Label("   Z");
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+				}
+				sValues[i] = GUILayout.TextField(sValues[i]);
+			}
+			GUILayout.EndHorizontal();
+			GUILayout.FlexibleSpace();     
 
             if (GUILayout.Button("Save"))
             {
@@ -212,16 +158,11 @@ namespace Sylver.AutomatronExtention
         public override string Serialize()
         {
             var data = "Spawn Block?" +
-                       "{blockID:"+blockID +
-                       ",posX:"+posX+
-                       ",posY:"+posY+
-                       ",posZ:"+posZ+
-                       ",rotX:"+rotX+
-                       ",rotY:"+rotY+
-                       ",rotZ:"+rotZ+
-                       ",scaleX:"+scaleX+
-                       ",scaleY:"+scaleY+
-                       ",scaleZ:"+scaleZ+"}";
+                       "{blockID:"+blockID;
+			for(int i = 0; i<9; i++)
+			{
+				data += ","+names[i]+":"+sValues[i];
+			}
             return data;
         }
 
@@ -241,36 +182,15 @@ namespace Sylver.AutomatronExtention
                     case "blockID":
                         blockID = val;
                         break;
-                    case "posX":
-                        posX = val;
-                        break;
-                    case "posY":
-                        posY = val;
-                        break;
-                    case "posZ":
-                        posZ = val;
-                        break;
-                    case "rotX":
-                        rotX = val;
-                        break;
-                    case "rotY":
-                        rotY = val;
-                        break;
-                    case "rotZ":
-                        rotZ = val;
-                        break;
-                    case "scaleX":
-                        scaleX = val;
-                        break;
-                    case "scaleY":
-                        scaleY = val;
-                        break;
-                    case "scaleZ":
-                        scaleZ = val;
+                    default:
+						var index = Array.IndexOf(names,key);
+						if(index!=-1) {
+							sValues[index] = val;
+						}
                         break;
                 }
             }  
             UpdateTitle();
         }
-    }
+	}
 }
