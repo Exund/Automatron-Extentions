@@ -30,6 +30,7 @@ namespace Sylver.AutomatronExtention
             base.Create(cb, hideCb);
             UpdateTitle();
             blockID = valueID.ToString();
+			sValues = new string[9];
 			for(int i = 0; i<9; i++) {
 				sValues[i] = fValues[i/3][i%3].ToString();
 			}
@@ -47,25 +48,20 @@ namespace Sylver.AutomatronExtention
 
         public override void Trigger(AutomatronBlock automatron)
         {
-			try
-			{
-				valueID = int.Parse(blockID);
-			} catch
-			{
-				valueID = 0;
-			}
+			try{ valueID = int.Parse(blockID);
+			} catch { valueID = 0; }
 			for(int i = 0;i<9;i++)
 			{
+				Debug.Log("S:"+sValues[i]);
 				try
-				{
-					fValues[i/3][i%3] = float.Parse(sValues[i]);
-				}catch
-				{
-					fValues[i/3][i%3] = 0;
-				}
+				{ fValues[i/3][i%3] = float.Parse(sValues[i]);
+				} catch{ fValues[i/3][i%3] = 0; }
 			}
-			
-            if (valueID == 0) fValues[(int)value.pos][(int)dim.z] += 0.5f;
+			Debug.Log(fValues[0]);
+			Debug.Log(fValues[1]);
+			Debug.Log(fValues[2]);
+
+			if(valueID == 0) fValues[(int)value.pos][(int)dim.z] += 0.5f;
 
             GameObject Nlock;
             if (blockToSpawn == null)
@@ -82,19 +78,18 @@ namespace Sylver.AutomatronExtention
             st.rotation = at.rotation * Quaternion.Euler(valueRotX, valueRotY, valueRotZ);*/
             st.localPosition = fValues[(int)value.pos];
             st.localRotation = Quaternion.Euler(fValues[(int)value.rot]);
-            st.localScale = fValues[(int)value.scale];
               
             Nlock.SetActive(true);
             XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
             blockToSpawn.OnSave(xDataHolder);
             Nlock.GetComponent<BlockBehaviour>().OnLoad(xDataHolder);
             Nlock.GetComponent<Rigidbody>().isKinematic = false;
-            Nlock.transform.localScale *= 1f;
             Nlock.transform.SetParent(Machine.Active().SimulationMachine);
-            
-        }
+			st.localScale = fValues[(int)value.scale];
 
-        private void SpawnChild()
+		}
+
+		private void SpawnChild()
         {
             if (blockToSpawn != null)
             {
@@ -109,7 +104,7 @@ namespace Sylver.AutomatronExtention
         {
             GUILayout.Label("Block ID");
             blockID = GUILayout.TextField(blockID);
-		
+
 			for(int i = 0; i<9; i++)
 			{
 				if(i%3==0)
@@ -169,6 +164,9 @@ namespace Sylver.AutomatronExtention
         public override void Load(string data)
         {
             base.Load(data);
+
+			sValues = new string[9];
+			for(int i = 0; i<9; i++) sValues[i] = i<6?"0":"1";
 
             data = data.Replace("{", "").Replace("}", "");
             var pairs = data.Split(',');
