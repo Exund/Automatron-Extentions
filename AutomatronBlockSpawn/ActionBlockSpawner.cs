@@ -39,9 +39,14 @@ namespace Sylver.AutomatronExtention
         {
             if (Game.IsSimulating) return;
 
-            if (blockID != "")
+            try
             {
-                this.Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName;
+                valueID = int.Parse(blockID);
+                Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName;
+            }
+            catch
+            {
+                Title = "Invalid ID";
             }
         }
 
@@ -129,9 +134,9 @@ namespace Sylver.AutomatronExtention
 							break;
 					}
 					GUILayout.BeginHorizontal();
-					GUILayout.Label("   X");
-					GUILayout.Label("   Y");
-					GUILayout.Label("   Z");
+					GUILayout.Label("X");
+					GUILayout.Label("Y");
+					GUILayout.Label("Z");
 					GUILayout.EndHorizontal();
 					GUILayout.BeginHorizontal();
 				}
