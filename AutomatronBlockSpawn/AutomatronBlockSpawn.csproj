@@ -68,7 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockSpawnerMod.cs" />
+    <Compile Include="AutomatronBlockSpawn.cs" />
     <Compile Include="ActionBlockSpawner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

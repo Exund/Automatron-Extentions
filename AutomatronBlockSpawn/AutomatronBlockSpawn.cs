@@ -10,11 +10,11 @@ namespace Sylver.AutomatronExtention
     // If you need documentation about any of these values or the mod loader
     // in general, take a look at https://spaar.github.io/besiege-modloader.
 
-    public class AutomatronExtention : Mod
+    public class AutomatronBlockSpawn : Mod
     {
-        public override string Name { get; } = "Automatron++";
-        public override string DisplayName { get; } = "Automatron++";
-        public override string Author { get; } = "Sylver/SSsylver";
+        public override string Name { get; } = "AutomatronBlockSpawn";
+        public override string DisplayName { get; } = "AutomatronBlockSpawn";
+        public override string Author { get; } = "Sylver/SSsylver (thank's to wang_w571 and spaar for help and code re-use)";
         public override Version Version { get; } = new Version(0, 0, 1);
 
         // You don't need to override this, if you leavie it out it will default
