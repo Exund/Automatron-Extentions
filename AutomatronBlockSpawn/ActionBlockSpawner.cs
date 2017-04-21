@@ -67,11 +67,11 @@ namespace Sylver.AutomatronExtention
 
             if (blockID != "")
             {
-                Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName + "\nat " +posX+" "+posY+" "+posZ;
+                this.Title = "Spawn " + PrefabMaster.BlockPrefabs[valueID].blockBehaviour.gameObject.GetComponent<MyBlockInfo>().blockName;
             }
         }
 
-        public override void Trigger()
+        public override void Trigger(AutomatronBlock automatron)
         {
             if (blockID == "") valueID = 0; 
             else valueID = int.Parse(blockID);
@@ -103,6 +103,7 @@ namespace Sylver.AutomatronExtention
             if (scaleZ == "") valueScaleZ = 1;
             else valueScaleZ = float.Parse(scaleZ);
 
+            if (valueID == 0) posZ += 0.5f;
 
 
             GameObject Nlock;
@@ -111,14 +112,11 @@ namespace Sylver.AutomatronExtention
                 SpawnChild();
             }
 
-            //Vector3 relativePosition = new Vector3(Machine.Active().GetBlock(410).transform.position.x + valuePosX, Machine.Active().GetBlock(410).transform.position.y + valuePosY, Machine.Active().GetBlock(410).transform.position.z + valuePosZ);
-            //Quaternion relativeRotation = new Quaternion(valueRotX, valueRotY, valueRotZ, Machine.Active().GetBlock(410).transform.rotation.w);
-            //Vector3 scale = new Vector3(valueScaleX, valueScaleY, valueScaleZ);
-            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject/*, relativePosition, relativeRotation*/);
+            Nlock = (GameObject)GameObject.Instantiate(blockToSpawn.gameObject);
 
             var st = Nlock.transform;
-            var at = Machine.Active().GetBlock(410).transform;
-            st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ+0.5f)) + at.position;
+            var at = automatron.transform;
+            st.position = at.TransformDirection(new Vector3(valuePosX, valuePosY, valuePosZ)) + at.position;
             st.rotation = at.rotation * Quaternion.Euler(valueScaleX, valueScaleY, valueScaleZ);
             st.localScale = new Vector3(valueScaleX, valueScaleY, valueScaleZ);
               
@@ -130,14 +128,6 @@ namespace Sylver.AutomatronExtention
             Nlock.transform.localScale *= 1f;
             Nlock.transform.SetParent(Machine.Active().SimulationMachine);
             
-        }
-
-        public void IDChanged(int ID)
-        {
-            if (BlockMapper.CurrentInstance == null)
-            {
-                SpawnChild();
-            }
         }
 
         private void SpawnChild()
