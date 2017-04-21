@@ -15,7 +15,7 @@ namespace Sylver.AutomatronExtention
         public override string Name { get; } = "AutomatronBlockSpawn";
         public override string DisplayName { get; } = "AutomatronBlockSpawn";
         public override string Author { get; } = "Sylver/SSsylver (thank's to wang_w571 and spaar for help and code re-use)";
-        public override Version Version { get; } = new Version(0, 0, 1);
+        public override Version Version { get; } = new Version(0, 1, 0);
 
         // You don't need to override this, if you leavie it out it will default
         // to an empty string.
