@@ -19,7 +19,7 @@ namespace Sylver.AutomatronExtention
 		private string[] sValues = new String[9];
 		private Vector3[] fValues = new Vector3[] { Vector3.zero,Vector3.zero,Vector3.one };
 		private string[] names = new string[]{"posX","posY","posZ",
-			"rotX","rotY","rotZ","scaleX","scaleX","scaleY","scaleZ"};
+			"rotX","rotY","rotZ","scaleX","scaleY","scaleZ"};
 		private enum value { pos = 0, rot = 1, scale = 2 };
 		private enum dim { x = 0, y = 1, z = 2 };
 
@@ -60,17 +60,13 @@ namespace Sylver.AutomatronExtention
 			} catch { valueID = 0; }
 			for(int i = 0;i<9;i++)
 			{
-				Debug.Log("S:"+sValues[i]);
-				try
+                try
 				{
 					fValues[i/3][i%3] = float.Parse(sValues[i]);
 				} catch { fValues[i/3][i%3] = 0; }
 			}
-			Debug.Log(fValues[0]);
-			Debug.Log(fValues[1]);
-			Debug.Log(fValues[2]);
 
-			if(valueID == 0) fValues[(int)value.pos][(int)dim.z] += 0.5f;
+            if (valueID == 0) fValues[(int)value.pos][(int)dim.z] += 0.5f;
 
 			GameObject Nlock;
 			if(blockToSpawn == null)
@@ -85,14 +81,14 @@ namespace Sylver.AutomatronExtention
 			st.parent = at;
 			st.localPosition = fValues[(int)value.pos];
 			st.localRotation = Quaternion.Euler(fValues[(int)value.rot]);
-
-			Nlock.SetActive(true);
+            st.localScale = fValues[(int)value.scale];
+            Nlock.SetActive(true);
 			XDataHolder xDataHolder = new XDataHolder { WasSimulationStarted = true };
 			blockToSpawn.OnSave(xDataHolder);
 			Nlock.GetComponent<BlockBehaviour>().OnLoad(xDataHolder);
 			Nlock.GetComponent<Rigidbody>().isKinematic = false;
 			Nlock.transform.SetParent(Machine.Active().SimulationMachine);
-			st.localScale = fValues[(int)value.scale];
+			
 
 		}
 
